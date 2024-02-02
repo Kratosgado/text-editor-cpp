@@ -1,5 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include "src/ImplementationUtils.h"
+#include "src/TextDocument.h"
+#include "src/EditorContent.h"
+#include "src/EditorView.h"
+#include "src/InputController.h"
 
 int main(int argc, char const* argv[]) {
    std::string workingDir = ImplementationUtils::getWorkingDirectory(argv[0]);
@@ -20,6 +24,13 @@ int main(int argc, char const* argv[]) {
    sf::Color backgroundColor = sf::Color(21, 29, 45);
 
    // Todo:: create text documents
+   TextDocument document;
+   document.init(loadFileName);
+
+   EditorContent editorContent(document);
+   EditorView editorView(window, workingDir, editorContent);
+
+   InputController inputController(editorContent);
 
    while (window.isOpen()) {
       sf::Event event;
@@ -35,6 +46,7 @@ int main(int argc, char const* argv[]) {
       // todo:: input controlls
 
       window.clear(backgroundColor);
+      editorView.draw(window);
       window.display();
    }
    return 0;

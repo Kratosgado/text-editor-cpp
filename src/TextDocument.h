@@ -13,8 +13,7 @@
 using std::string;
 using std::vector;
 
-class TextDocument
-{
+class TextDocument {
 private:
    sf::String buffer;
    int length;
@@ -23,25 +22,25 @@ private:
 
    // private member functions
    bool initLineBuffer();
-   int getBufferPos(int line, int charN);
-   void swapWithNextLine(int line);
+   // int getBufferPos(int line, int charN);
+   // void swapWithNextLine(int line);
    sf::String toUtf32(const string& inString);
 
 public:
-   bool init(string& filename);
-   bool saveFile(string& filename);
-   bool hasChanged();
-   sf::String getLine(int lineNumber);
-   int charsInLine(int line) const;
-   int getLintCount() const;
+   bool init(string&);
+   // bool saveFile(string& filename);
+   bool hasChanged() const;
+   // sf::String getLine(int lineNumber);
+   // int charsInLine(int line) const;
+   // int getLintCount() const;
 
-   void addTextToPos(sf::String text, int line, int charN);
-   void removeTextFromPos(int amount, int line, int charN);
-   sf::String getTextFromPos(int amount, int line, int charN);
+   // void addTextToPos(sf::String text, int line, int charN);
+   // void removeTextFromPos(int amount, int line, int charN);
+   // sf::String getTextFromPos(int amount, int line, int charN);
 
-   void swapLines(int lineA, int lineB);
-   int charAmountContained(int startLineN, int startCharN, int endLineN, int endCharN);
-   
+   // void swapLines(int lineA, int lineB);
+   // int charAmountContained(int startLineN, int startCharN, int endLineN, int endCharN);
+
 };
 
 #endif // TextDocument_H
