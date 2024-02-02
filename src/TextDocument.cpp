@@ -46,3 +46,25 @@ sf::String TextDocument::toUtf32(const string& inString) {
    return outString;
 
 }
+
+sf::String TextDocument::getLine(int lineNumber) {
+   int lastLine = this->lineBuffer.size() - 1;
+
+   if (lineNumber < 0 || lineNumber > lastLine) {
+      std::cerr << "lineNumber " << lineNumber << " is not a valid number line. " << "Max is: " << lastLine << std::endl;
+      return "";
+   }
+   if (lineNumber == lastLine) {
+      return this->buffer.substring(this->lineBuffer[lineNumber]);
+   }
+   else {
+      int bufferStart = this->lineBuffer[lineNumber];
+      int nextBufferStart = this->lineBuffer[lineNumber + 1];// final no inclusive
+      int cantidad = nextBufferStart - bufferStart - 1;
+      return this->buffer.substring(bufferStart, cantidad);
+   }
+}
+
+int TextDocument::getLineCount() const {
+   return (int)this->lineBuffer.size();
+}

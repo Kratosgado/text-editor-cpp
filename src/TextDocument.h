@@ -30,9 +30,9 @@ public:
    bool init(string&);
    // bool saveFile(string& filename);
    bool hasChanged() const;
-   // sf::String getLine(int lineNumber);
+   sf::String getLine(int lineNumber);
    // int charsInLine(int line) const;
-   // int getLintCount() const;
+   int getLineCount() const;
 
    // void addTextToPos(sf::String text, int line, int charN);
    // void removeTextFromPos(int amount, int line, int charN);

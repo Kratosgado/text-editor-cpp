@@ -46,6 +46,7 @@ int main(int argc, char const* argv[]) {
       // todo:: input controlls
 
       window.clear(backgroundColor);
+      window.setView(editorView.getCameraView());
       editorView.draw(window);
       window.display();
    }
