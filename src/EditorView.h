@@ -28,7 +28,7 @@ private:
    float deltaZoomIn, deltaZoomOut;
 
    void drawLines(sf::RenderWindow&);
-   //  void drawCursor(sf::RenderWindow &window);
+   void drawCursor(sf::RenderWindow& window);
 
 public:
    EditorView(const sf::RenderWindow& window, const sf::String& workingDir, EditorContent& editorContent);

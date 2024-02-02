@@ -17,6 +17,22 @@ bool TextDocument::init(string& filename) {
    return true;
 }
 
+bool TextDocument::saveFile(string& filename) {
+   std::ofstream outFile(filename);
+   if (!outFile.is_open()) {
+      std::cerr << "Error opening file: " << filename << std::endl;
+      return false;
+   }
+   std::stringstream toBeSaved;
+   for (sf::Uint32 ch : this->buffer) {
+      toBeSaved << SpecialChars::convertSpecialChar(ch, outFile);
+   }
+   outFile << toBeSaved.str();
+   outFile.close();
+   this->documentHasChanged = false;
+   return true;
+}
+
 bool TextDocument::hasChanged() const { return this->documentHasChanged; }
 
 bool TextDocument::initLineBuffer() {
@@ -63,6 +79,13 @@ sf::String TextDocument::getLine(int lineNumber) {
       int cantidad = nextBufferStart - bufferStart - 1;
       return this->buffer.substring(bufferStart, cantidad);
    }
+}
+
+void TextDocument::addTextToPos(sf::String text, int line, int charN) {
+   this->documentHasChanged = true;
+
+   int textSize = text.getSize();
+   // todo
 }
 
 int TextDocument::getLineCount() const {
