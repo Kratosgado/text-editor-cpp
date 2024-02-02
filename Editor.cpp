@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "ImplementationUtils.h"
+#include "src/ImplementationUtils.h"
 
 int main(int argc, char const* argv[]) {
    std::string workingDir = ImplementationUtils::getWorkingDirectory(argv[0]);
@@ -37,7 +37,5 @@ int main(int argc, char const* argv[]) {
       window.clear(backgroundColor);
       window.display();
    }
-
-
    return 0;
 }
