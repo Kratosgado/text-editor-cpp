@@ -17,9 +17,9 @@ using std::string;
 using std::vector;
 
 class TextDocument {
-   public:
-    bool init(string &filename);
-    bool saveFile(string &filename);
+public:
+    bool init(string& filename);
+    bool saveFile(string& filename);
     bool hasChanged();
 
     sf::String getLine(int lineNumber);

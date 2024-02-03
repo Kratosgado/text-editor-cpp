@@ -16,7 +16,6 @@ int main(int argc, char const* argv[]) {
    window.setVerticalSyncEnabled(true);
    sf::Color backgroundColor = sf::Color(21, 29, 45);
 
-   // Todo:: create text documents
    TextDocument document;
    document.init(loadFileName);
 

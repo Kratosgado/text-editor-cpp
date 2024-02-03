@@ -3,7 +3,7 @@
 // La idea es leer el file y guardarlo en buffer (quiero cargarlo en la memoria)
 // Para esto uso std::ifstream para levantar el archivo
 // TODO: Esto deberia ser el constructot, no quiero llamarlo a mano
-bool TextDocument::init(string &filename) {
+bool TextDocument::init(string& filename) {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
@@ -20,7 +20,8 @@ bool TextDocument::init(string &filename) {
     return true;
 }
 
-bool TextDocument::saveFile(string &filename) {
+// saves document as txt
+bool TextDocument::saveFile(string& filename) {
     std::ofstream outputFile(filename);
     if (!outputFile.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
@@ -33,9 +34,7 @@ bool TextDocument::saveFile(string &filename) {
         toBeSaved << SpecialChars::convertSpecialChar(ch, outputFile);
     }
     outputFile << toBeSaved.str();
-
     outputFile.close();
-
     this->documentHasChanged = false;
     return true;
 }
@@ -68,14 +67,15 @@ sf::String TextDocument::getLine(int lineNumber) {
 
     if (lineNumber < 0 || lineNumber > lastLine) {
         std::cerr << "lineNumber " << lineNumber << " is not a valid number line. "
-                  << "Max is: " << this->lineBuffer.size() - 1 << std::endl;
+            << "Max is: " << this->lineBuffer.size() - 1 << std::endl;
         return "";
     }
 
     if (lineNumber == lastLine) {
         return this->buffer.substring(this->lineBuffer[lineNumber]);
 
-    } else {
+    }
+    else {
         int bufferStart = this->lineBuffer[lineNumber];
         int nextBufferStart = this->lineBuffer[lineNumber + 1];  // Final no inclusive
         int cantidad = nextBufferStart - bufferStart - 1;
@@ -84,7 +84,7 @@ sf::String TextDocument::getLine(int lineNumber) {
     }
 }
 
-sf::String TextDocument::toUtf32(const std::string &inString) {
+sf::String TextDocument::toUtf32(const std::string& inString) {
     sf::String outString = "";
     auto iterEnd = inString.cend();
 
@@ -155,15 +155,16 @@ void TextDocument::swapLines(int lineA, int lineB) {
 
     if (minLine < 0) {
         std::cerr << "SwapLines: Line " << minLine << " does not exist"
-                  << "\n";
+            << "\n";
     }
     if (maxLine > lastLine) {
         std::cerr << "SwapLines: Line " << lastLine << " does not exist"
-                  << "\n";
+            << "\n";
     }
     if (minLine == maxLine - 1) {
         this->swapWithNextLine(minLine);
-    } else {
+    }
+    else {
         std::cerr << "Cant swap non-contiguous lines\n";
     }
 }
@@ -207,7 +208,8 @@ int TextDocument::charsInLine(int line) const {
 
     if (line == bufferSize - 1) {
         return this->buffer.getSize() - this->lineBuffer[this->lineBuffer.size() - 1];
-    } else {
+    }
+    else {
         return this->lineBuffer[line + 1] - this->lineBuffer[line] - 1;
     }
 }
