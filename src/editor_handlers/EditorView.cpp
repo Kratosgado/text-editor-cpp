@@ -11,7 +11,7 @@ deltaScroll(20), deltaRotation(2), deltaZoomIn(0.8f), deltaZoomOut(1.2f) {
    this->bottomLimitPx = 1;
    this->rightLimitPx = 1;
 
-   this->setFontSize(12); // important to call
+   this->setFontSize(12);
 
    this->marginXOffset = 45;
    this->colorMargin = sf::Color(32, 44, 68);
@@ -24,31 +24,17 @@ void EditorView::setFontSize(int fontSize) {
    this->fontSize = fontSize;
    this->lineHeight = fontSize;
 
-   // HACK: Because I use only monospace fonts, every char is the same width
-    //       so I get the width drawing a single character (A WIDE ONE TO BE SURE)
    sf::Text tmpText;
    tmpText.setFont(this->font);
    tmpText.setCharacterSize(this->fontSize);
    tmpText.setString("_");
-   float textwidth = tmpText.getLocalBounds().width;
-   this->charWidth = textwidth;
+   this->charWidth = tmpText.getLocalBounds().width;
 }
 
-float EditorView::getRightLimitPx() {
-   return this->rightLimitPx;
-}
-
-float EditorView::getBottomLimitPx() {
-   return this->bottomLimitPx;
-}
-
-int EditorView::getLineHeight() {
-   return this->lineHeight;
-}
-
-int EditorView::getCharWidth() {
-   return this->charWidth;
-}
+float EditorView::getRightLimitPx() {return this->rightLimitPx;}
+float EditorView::getBottomLimitPx() {return this->bottomLimitPx;}
+int EditorView::getLineHeight() {return this->lineHeight;}
+int EditorView::getCharWidth() {return this->charWidth;}
 
 void EditorView::draw(sf::RenderWindow& window) {
    this->drawLines(window);
@@ -87,6 +73,7 @@ int colsOf(sf::String& currentLineText) {
    }
    return cols;
 }
+
 void EditorView::drawLines(sf::RenderWindow& window) {
    this->bottomLimitPx = this->content.linesCount() * this->fontSize;
 
@@ -131,6 +118,7 @@ void EditorView::drawLines(sf::RenderWindow& window) {
    }
 }
 
+// draws the cursor
 void EditorView::drawCursor(sf::RenderWindow& window) {
    int offsetY = 2;
    int cursorDrawWidth = 2;
@@ -151,8 +139,6 @@ void EditorView::drawCursor(sf::RenderWindow& window) {
 
    window.draw(cursorRect);
 }
-
-
 
 void EditorView::rotateLeft() { this->camera.rotate(this->deltaRotation); }
 void EditorView::rotateRight() { this->camera.rotate(-this->deltaRotation); }
@@ -193,13 +179,16 @@ void EditorView::scrollRight(sf::RenderWindow& window) {
    }
 }
 
-void EditorView::setCameraBounds(int width, int height) { this->camera = sf::View(sf::FloatRect(-50, 0, width, height)); }
-
-
-sf::View EditorView::getCameraView() {
-   return this->camera;
+void EditorView::setCameraBounds(int width, int height) {
+   this->camera = sf::View(sf::FloatRect(-50, 0, width, height));
 }
 
+sf::View EditorView::getCameraView() { return this->camera; }
+
+/// @brief returns the position of mouse click
+/// @param mouseX 
+/// @param mouseY 
+/// @return lineN, charN
 std::pair<int, int> EditorView::getDocumentCoords(float mouseX, float mouseY) {
    int lineN = mouseY / this->getLineHeight();
    int charN = 0;

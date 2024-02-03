@@ -1,9 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include "src/ImplementationUtils.h"
-#include "src/TextDocument.h"
-#include "src/EditorContent.h"
-#include "src/EditorView.h"
-#include "src/InputController.h"
+#include "src/text_handlers/TextDocument.h"
+#include "src/editor_handlers/EditorContent.h"
+#include "src/editor_handlers/EditorView.h"
+#include "src/input_handlers/InputController.h"
 
 int main(int argc, char const* argv[]) {
    std::string workingDir = ImplementationUtils::getWorkingDirectory(argv[0]);

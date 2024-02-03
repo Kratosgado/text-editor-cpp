@@ -2,9 +2,9 @@
 #define EditorContent_H
 
 #include <SFML/Graphics.hpp>
-#include "SelectionData.h"
-#include "TextDocument.h"
-#include "Cursor.h"
+#include "../text_handlers/SelectionData.h"
+#include "../text_handlers/TextDocument.h"
+#include "../input_handlers/Cursor.h"
 
 class EditorContent {
    public:

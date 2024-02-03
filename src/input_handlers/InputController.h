@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "EditorView.h"
-#include "EditorContent.h"
+#include "../editor_handlers/EditorView.h"
+#include "../editor_handlers/EditorContent.h"
 
 class InputController {
 private:
