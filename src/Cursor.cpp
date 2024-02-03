@@ -19,3 +19,18 @@ void Cursor::updatePos(int l, int c) {
    this->lineN = l;
    this->charN = c;
 }
+
+void Cursor::setPosition(int lineN, int charN, bool updateMaxChar) {
+   this->updatePos(lineN, charN);
+   if (updateMaxChar) {
+      this->setMaxCharNReached(this->charN);
+   }
+}
+
+void Cursor::setMaxCharNReached(int charN) {
+   this->maxCharNReached = charN;
+}
+
+int Cursor::getMaxCharNReached() {
+   return this->maxCharNReached;
+}

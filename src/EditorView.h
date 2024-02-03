@@ -64,4 +64,6 @@ public:
    //TODO: Replace std::pair with coordinates object
    std::pair<int, int> getDocumentCoords(float mouseX, float mouseY);
 };
+
+
 #endif // EditorView_H

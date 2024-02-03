@@ -8,15 +8,8 @@
 int main(int argc, char const* argv[]) {
    std::string workingDir = ImplementationUtils::getWorkingDirectory(argv[0]);
 
-   std::string saveFileName;
-   std::string loadFileName;
+   std::string saveFileName, loadFileName;
 
-   // if (argc == 2) {
-   //    saveFileName = loadFileName = workingDir + argv[1];
-   // }
-   // else {
-   //    saveFileName = loadFileName = workingDir + "txt/defaultName.txt";
-   //  }
    saveFileName = loadFileName = workingDir + ((argc == 2) ? argv[1] : "txt/defaultName.txt");
 
    sf::RenderWindow window(sf::VideoMode(720, 405), "Gado Text");
@@ -29,7 +22,6 @@ int main(int argc, char const* argv[]) {
 
    EditorContent editorContent(document);
    EditorView editorView(window, workingDir, editorContent);
-
    InputController inputController(editorContent);
 
    while (window.isOpen()) {
@@ -37,13 +29,17 @@ int main(int argc, char const* argv[]) {
       while (window.pollEvent(event)) {
          if (event.type == sf::Event::Closed) window.close();
          if (event.type == sf::Event::Resized) {
-            // todo:: handle resize
+            editorView.setCameraBounds(event.size.width, event.size.height);
          }
          if (event.key.code == sf::Keyboard::S && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-            // todo:: handle saving
+            if (document.hasChanged()) {
+               document.saveFile(saveFileName);
+               std::cout << "SAVED TO: " << saveFileName << "\n";
+            }
          }
+         inputController.handleEvents(editorView, window, event);
       }
-      // todo:: input controlls
+      inputController.handleConstantInput(editorView, window);
 
       window.clear(backgroundColor);
       window.setView(editorView.getCameraView());

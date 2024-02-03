@@ -156,6 +156,77 @@ void EditorView::drawCursor(sf::RenderWindow& window) {
 
    window.draw(cursorRect);
 }
+
+
+
+void EditorView::rotateLeft() { this->camera.rotate(this->deltaRotation); }
+void EditorView::rotateRight() { this->camera.rotate(-this->deltaRotation); }
+void EditorView::zoomIn() { this->camera.zoom(this->deltaZoomIn); }
+void EditorView::zoomOut() { this->camera.zoom(this->deltaZoomOut); }
+
+void EditorView::scrollUp(sf::RenderWindow& window) {
+   float height = window.getView().getSize().y;
+   auto camPos = this->camera.getCenter();
+   if (camPos.y - height / 2 > 0) {
+      this->camera.move(0, -this->deltaScroll);
+   }
+}
+
+void EditorView::scrollDown(sf::RenderWindow& window) {
+   float height = window.getView().getSize().y;
+   float bottomLimit = std::max(this->getBottomLimitPx(), height);
+   auto camPos = this->camera.getCenter();
+   if (camPos.y + height / 2 < bottomLimit + 20) {
+      this->camera.move(0, this->deltaScroll);
+   }
+}
+
+void EditorView::scrollLeft(sf::RenderWindow& window) {
+   float width = window.getView().getSize().x;
+   auto camPos = this->camera.getCenter();
+   if (camPos.x - width / 2 > -this->marginXOffset) {
+      this->camera.move(-this->deltaScroll, 0);
+   }
+}
+
+void EditorView::scrollRight(sf::RenderWindow& window) {
+   float width = window.getView().getSize().x;
+   float rightLimit = std::max(this->getRightLimitPx(), width);
+   auto camPos = this->camera.getCenter();
+   if (camPos.x + width / 2 < rightLimit + 20) {
+      this->camera.move(this->deltaScroll, 0);
+   }
+}
+
+void EditorView::setCameraBounds(int width, int height) { this->camera = sf::View(sf::FloatRect(-50, 0, width, height)); }
+
+
 sf::View EditorView::getCameraView() {
    return this->camera;
+}
+
+std::pair<int, int> EditorView::getDocumentCoords(float mouseX, float mouseY) {
+   int lineN = mouseY / this->getLineHeight();
+   int charN = 0;
+
+   int lastLine = this->content.linesCount() - 1;
+   if (lineN < 0) {
+      lineN = charN = 0;
+   }
+   else if (lineN > lastLine) {
+      lineN = lastLine;
+      charN = this->content.colsInLine(lineN);
+   }
+   else {
+      lineN = std::max(lineN, 0);
+      lineN = std::min(lineN, lastLine);
+
+      // column !- charN because tabs
+      int column = std::round(mouseX / this->getCharWidth());
+      charN = this->content.getCharIndexOfColumn(lineN, column);
+
+      charN = std::max(charN, 0);
+      charN = std::min(charN, this->content.colsInLine(lineN));
+   }
+   return std::pair<int, int>(lineN, charN);
 }

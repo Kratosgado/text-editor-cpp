@@ -81,6 +81,16 @@ sf::String TextDocument::getLine(int lineNumber) {
    }
 }
 
+int TextDocument::charsInLine(int line) const {
+   int bufferSize = this->lineBuffer.size();
+   if (line == bufferSize - 1) {
+      return this->buffer.getSize() - this->lineBuffer[bufferSize - 1];
+   }
+   else {
+      return this->lineBuffer[line + 1] - bufferSize - 1;
+   }
+}
+
 void TextDocument::addTextToPos(sf::String text, int line, int charN) {
    this->documentHasChanged = true;
 

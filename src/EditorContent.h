@@ -1,61 +1,61 @@
-#if !defined(EditorContent_H)
+#ifndef EditorContent_H
 #define EditorContent_H
 
 #include <SFML/Graphics.hpp>
+#include "SelectionData.h"
 #include "TextDocument.h"
 #include "Cursor.h"
-#include "SelectionData.h"
 
 class EditorContent {
-private:
-   TextDocument& document;
-   sf::Font font;
-   Cursor cursor;
-   SelectionData selections;
+   public:
+    EditorContent(TextDocument &textDocument);
 
-public:
-   EditorContent(TextDocument&);
+    void createNewSelection(int anclaLine, int anclaChar);
+    void createNewSelectionFromCursor();
+    void updateLastSelection(int lineN, int charN);
 
+    void removeSelections();
+    SelectionData::Selection getLastSelection();
 
-   void createNewSelection(int anclaLine, int anclaChar);
-   void createNewSelectionFromCursor();
-   void updateLastSelection(int lineN, int charN);
+    void duplicateCursorLine();
+    void swapCursorLine(bool swapWithUp);
+    void swapSelectedLines(bool swapWithUp);
 
-   void removeSelections();
-   SelectionData::Selection getLastSelection();
+    bool isSelected(int lineNumber, int charIndexInLine);
+    bool deleteSelections();
+    sf::String copySelections();
 
-   void duplicateCursorLine();
-   void swapCursorLine(bool swapWithUp);
-   void swapSelectedLines(bool swapWithUp);
+    // TODO: Se puede pasar los valores por defecto al .cpp ?
+    bool moveCursorLeft(bool updateActiveSelections=false);
+    void moveCursorRight(bool updateActiveSelections=false);
+    void moveCursorUp(bool updateActiveSelections=false);
+    void moveCursorDown(bool updateActiveSelections=false);
 
-   bool isSelected(int lineNumber, int charIndexInLine);
-   bool deleteSelections();
-   sf::String copySelections();
+    void moveCursorToEnd(bool updateActiveSelections=false);
+    void moveCursorToStart(bool updateActiveSelections=false);
 
-   // TODO: Se puede pasar los valores por defecto al .cpp ?
-   bool moveCursorLeft(bool updateActiveSelections = false);
-   void moveCursorRight(bool updateActiveSelections = false);
-   void moveCursorUp(bool updateActiveSelections = false);
-   void moveCursorDown(bool updateActiveSelections = false);
+    void addTextInCursorPos(sf::String text);
+    void deleteTextAfterCursorPos(int amount);
+    void deleteTextBeforeCursorPos(int amount);
 
-   void moveCursorToEnd(bool updateActiveSelections = false);
-   void moveCursorToStart(bool updateActiveSelections = false);
+    int linesCount();
+    int colsInLine(int line);
+    sf::String getLine(int line);
+    sf::String getCursorLine();
 
-   void addTextInCursorPos(sf::String text);
-   void deleteTextAfterCursorPos(int amount);
-   void deleteTextBeforeCursorPos(int amount);
+    void resetCursor(int line, int column);
+    std::pair<int, int> cursorPosition();
+    int getCharIndexOfColumn(int lineN, int column);
+    int getColumnFromCharN(int lineN, int charN);
 
-   int linesCount();
-   int colsInLine(int line);
-   sf::String getLine(int line);
-   sf::String getCursorLine();
+   private:
+    TextDocument &document;
 
-   void resetCursor(int line, int column);
-   std::pair<int, int> cursorPosition();
-   int getCharIndexOfColumn(int lineN, int column);
-   int getColumnFromCharN(int lineN, int charN);
+    sf::Font font;
+    Cursor cursor;
+    SelectionData selections;
 
-
+    void handleSelectionOnCursorMovement(bool updateActiveSelections);
 };
 
-#endif // EditorContent_H
+#endif
