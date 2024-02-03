@@ -7,7 +7,6 @@ Cursor::Cursor(int lineN, int charN) {
    this->updatePos(lineN, charN);
 }
 
-// updateMaxChar=false por defecto
 void Cursor::setPosition(int lineN, int charN, bool updateMaxChar) {
    this->updatePos(lineN, charN);
    if (updateMaxChar) {

@@ -33,7 +33,7 @@ public:
     void swapLines(int lineA, int lineB);
 
     int charAmountContained(int startLineN, int startCharN, int endLineN, int endCharN);
-   private:
+private:
     bool initLinebuffer();
     sf::String buffer;
     int length;
@@ -41,10 +41,8 @@ public:
     bool documentHasChanged;
 
     int getBufferPos(int line, int charN);
-
     void swapWithNextLine(int line);
-
-    sf::String toUtf32(const std::string &inString);
+    sf::String toUtf32(const std::string& inString);
 };
 
 #endif

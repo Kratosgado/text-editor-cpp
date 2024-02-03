@@ -94,18 +94,14 @@ void EditorView::drawLines(sf::RenderWindow& window) {
       sf::String line = this->content.getLine(lineNumber);
       sf::String currentLineText = "";
 
-      // TODO: Esto es al pe?
       this->rightLimitPx = std::max((int)this->rightLimitPx, (int)(this->charWidth * line.getSize()));
 
       float offsetx = 0;
       bool previousSelected = false;
 
       for (int charIndexInLine = 0; charIndexInLine <= (int)line.getSize(); charIndexInLine++) {
-         // En general hay una unica seleccion, en el futuro podria haber mas de una
          bool currentSelected = content.isSelected(lineNumber, charIndexInLine);
 
-         // Cuando hay un cambio, dibujo el tipo de seleccion anterior
-         // Tambien dibujo cuando es el fin de la linea actual
          if (currentSelected != previousSelected || charIndexInLine == (int)line.getSize()) {
             sf::Text texto;
             texto.setFillColor(this->colorChar);
@@ -119,7 +115,6 @@ void EditorView::drawLines(sf::RenderWindow& window) {
                sf::RectangleShape selectionRect(
                   sf::Vector2f(this->charWidth * currentColsAmount, this->fontSize));
                selectionRect.setFillColor(this->colorSelection);
-               // TODO: Que el +2 no sea un numero magico
                selectionRect.setPosition(offsetx, 2 + lineNumber * this->fontSize);
                window.draw(selectionRect);
             }

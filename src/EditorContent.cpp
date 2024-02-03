@@ -1,12 +1,10 @@
 #include "EditorContent.h"
 
-EditorContent::EditorContent(TextDocument &textDocument) :
+EditorContent::EditorContent(TextDocument& textDocument) :
     document(textDocument) {
     this->cursor = Cursor(0, 0);
 }
 
-// TODO: Diferenciar posicion en columnas de chars
-// Esta seria posicion en columna?
 std::pair<int, int> EditorContent::cursorPosition() {
     int lineN = this->cursor.getLineN();
     int charN = this->cursor.getCharN();
@@ -39,8 +37,6 @@ SelectionData::Selection EditorContent::getLastSelection() {
     return this->selections.getLastSelection();
 }
 
-
-// TODO: Duplicar seleccion en vez de removerla
 void EditorContent::duplicateCursorLine() {
     this->removeSelections();
 
@@ -53,7 +49,6 @@ void EditorContent::duplicateCursorLine() {
 
 void EditorContent::swapSelectedLines(bool swapWithUp) {
     auto lastSelection = this->getLastSelection();
-    // If there is no selection, consider the cursor a selection. Design choice.
     if (!lastSelection.activa) {
         this->swapCursorLine(swapWithUp);
         return;
@@ -76,7 +71,8 @@ void EditorContent::swapSelectedLines(bool swapWithUp) {
         this->createNewSelection(startLineN - 1, startCharN);
         this->updateLastSelection(endLineN - 1, endCharN);
 
-    } else if (!swapWithUp && rangeEnd < this->document.getLineCount() - 1) {
+    }
+    else if (!swapWithUp && rangeEnd < this->document.getLineCount() - 1) {
         for (int i = rangeEnd; i >= rangeStart; i--) {
             this->document.swapLines(i, i + 1);
         }
@@ -91,16 +87,15 @@ void EditorContent::swapCursorLine(bool swapWithUp) {
     int currentLine = this->cursor.getLineN();
     if (swapWithUp) {
         this->document.swapLines(currentLine, std::max(currentLine - 1, 0));
-    } else {
+    }
+    else {
         this->document.swapLines(currentLine, std::min(currentLine + 1, this->document.getLineCount() - 1));
     }
 }
 
-
-// Actualiza ademas el maximo char alcanzado
 bool EditorContent::moveCursorLeft(bool updateActiveSelections) {
     bool moved = (this->cursor.getLineN() != 0)
-    || ((this->cursor.getLineN() == 0) && (this->cursor.getCharN() > 0));
+        || ((this->cursor.getLineN() == 0) && (this->cursor.getCharN() > 0));
 
     if (this->cursor.getCharN() <= 0) {
         int newCursorLine = std::max(this->cursor.getLineN() - 1, 0);
@@ -109,7 +104,8 @@ bool EditorContent::moveCursorLeft(bool updateActiveSelections) {
             newCursorChar = this->document.charsInLine(newCursorLine);
         }
         this->cursor.setPosition(newCursorLine, newCursorChar, true);
-    } else {
+    }
+    else {
         this->cursor.moveLeft(true);
     }
 
@@ -118,16 +114,16 @@ bool EditorContent::moveCursorLeft(bool updateActiveSelections) {
     return moved;
 }
 
-// Actualiza ademas el maximo char alcanzado
 void EditorContent::moveCursorRight(bool updateActiveSelections) {
     int charsInLine = this->document.charsInLine(this->cursor.getLineN());
     if (this->cursor.getCharN() >= charsInLine) {
         int newCursorLine = std::min(this->cursor.getLineN() + 1, this->document.getLineCount() - 1);
         // update cursor position only if new line is not same as old, will happen at last line
         if (newCursorLine != this->cursor.getLineN()) {
-          this->cursor.setPosition(newCursorLine, 0, true);
+            this->cursor.setPosition(newCursorLine, 0, true);
         }
-    } else {
+    }
+    else {
         this->cursor.moveRight(true);
     }
 
@@ -139,10 +135,10 @@ void EditorContent::moveCursorUp(bool updateActiveSelections) {
         int charsInPreviousLine = this->document.charsInLine(this->cursor.getLineN() - 1);
         int currentCharPos = this->cursor.getCharN();
 
-        // Si el caracter actual existe en la linea de arriba, voy solo arriba, sino voy al final de la linea de arriba
         if (currentCharPos <= charsInPreviousLine && this->cursor.getMaxCharNReached() <= charsInPreviousLine) {
             this->cursor.moveUpToMaxCharN();
-        } else {
+        }
+        else {
             this->cursor.setPosition(this->cursor.getLineN() - 1, charsInPreviousLine);
         }
     }
@@ -157,7 +153,8 @@ void EditorContent::moveCursorDown(bool updateActiveSelections) {
 
         if (currentCharPos <= charsInNextLine && this->cursor.getMaxCharNReached() <= charsInNextLine) {
             this->cursor.moveDownToMaxCharN();
-        } else {
+        }
+        else {
             this->cursor.setPosition(this->cursor.getLineN() + 1, charsInNextLine);
         }
     }
@@ -204,23 +201,18 @@ void EditorContent::addTextInCursorPos(sf::String text) {
     }
 }
 
-// Borra el texto contenido en la seleccion y tambien la seleccion en si
-// Devuelve true si se borro una seleccion
 bool EditorContent::deleteSelections() {
     SelectionData::Selection lastSelection = this->getLastSelection();
     this->removeSelections();
 
-    // Tomar el inicio de lastSelection, calcular el largo y borrar desde el inicio,
     if (lastSelection.activa) {
         int startLineN = SelectionData::getStartLineN(lastSelection);
         int startCharN = SelectionData::getStartCharN(lastSelection);
         int endLineN = SelectionData::getEndLineN(lastSelection);
         int endCharN = SelectionData::getEndCharN(lastSelection);
 
-        // Muevo el cursor al inicio de la seleccion
         this->cursor.setPosition(startLineN, startCharN, true);
 
-        // -1 por como funcionan los extremos de la seleccion
         int amount = this->document.charAmountContained(startLineN, startCharN, endLineN, endCharN) - 1;
         this->deleteTextAfterCursorPos(amount);
     }
@@ -233,17 +225,14 @@ sf::String EditorContent::copySelections() {
     //this->removeSelections();
 
     sf::String copied = "";
-    // Tomar el inicio de lastSelection, calcular el largo y borrar desde el inicio,
     if (lastSelection.activa) {
         int startLineN = SelectionData::getStartLineN(lastSelection);
         int startCharN = SelectionData::getStartCharN(lastSelection);
         int endLineN = SelectionData::getEndLineN(lastSelection);
         int endCharN = SelectionData::getEndCharN(lastSelection);
 
-        // Muevo el cursor al inicio de la seleccion
         this->cursor.setPosition(startLineN, startCharN, true);
 
-        // -1 por como funcionan los extremos de la seleccion
         int amount = this->document.charAmountContained(startLineN, startCharN, endLineN, endCharN) - 1;
         copied = this->document.getTextFromPos(amount, startLineN, startCharN);
     }
@@ -253,7 +242,8 @@ sf::String EditorContent::copySelections() {
 void EditorContent::handleSelectionOnCursorMovement(bool updateActiveSelections) {
     if (updateActiveSelections) {
         this->updateLastSelection(this->cursor.getLineN(), this->cursor.getCharN());
-    } else {
+    }
+    else {
         this->removeSelections();
     }
 }
@@ -281,7 +271,6 @@ void EditorContent::resetCursor(int line, int column) {
     this->cursor.setMaxCharNReached(column);
 }
 
-// TODO: Deberia tirar error si no existe la linea
 int EditorContent::getCharIndexOfColumn(int lineN, int column) {
     sf::String line = this->getLine(lineN);
     int len = this->colsInLine(lineN);
@@ -294,22 +283,23 @@ int EditorContent::getCharIndexOfColumn(int lineN, int column) {
 
         if (line[charN] == '\t') {
             currentCol += 4;
-        } else {
+        }
+        else {
             currentCol++;
         }
     }
     return len == 0 ? 0 : len - 1;
 }
 
-// TODO: Refactor es casi igual al otro metodo
 int EditorContent::getColumnFromCharN(int lineN, int charN) {
     sf::String line = this->getLine(lineN);
-    // int len = this->colsInLine(lineN);  // El nombre esta mal, pero devuelve los chars
+    // int len = this->colsInLine(lineN); 
     int currentCol = 0;
     for (int charNact = 0; charNact < charN; charNact++) {
         if (line[charNact] == '\t') {
             currentCol += 4;
-        } else {
+        }
+        else {
             currentCol++;
         }
     }

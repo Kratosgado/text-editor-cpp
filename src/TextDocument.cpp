@@ -1,8 +1,6 @@
 #include "TextDocument.h"
 
-// La idea es leer el file y guardarlo en buffer (quiero cargarlo en la memoria)
-// Para esto uso std::ifstream para levantar el archivo
-// TODO: Esto deberia ser el constructot, no quiero llamarlo a mano
+// initialize a text document with the given filename
 bool TextDocument::init(string& filename) {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
@@ -28,7 +26,6 @@ bool TextDocument::saveFile(string& filename) {
         return false;
     }
 
-    //It looks more straight-forward to me (Luca Errani)
     std::stringstream toBeSaved;
     for (sf::Uint32 ch : this->buffer) {
         toBeSaved << SpecialChars::convertSpecialChar(ch, outputFile);
@@ -61,7 +58,6 @@ bool TextDocument::initLinebuffer() {
     return true;
 }
 
-// Devuelve una copia de la linea que esta en mi buffer
 sf::String TextDocument::getLine(int lineNumber) {
     int lastLine = this->lineBuffer.size() - 1;
 
@@ -88,13 +84,11 @@ sf::String TextDocument::toUtf32(const std::string& inString) {
     sf::String outString = "";
     auto iterEnd = inString.cend();
 
-    // Decode avanza el iterador
     for (auto iter = inString.cbegin(); iter != iterEnd;) {
         sf::Uint32 out;
         iter = sf::Utf8::decode(iter, iterEnd, out);
         outString += out;
     }
-
     return outString;
 }
 
@@ -112,9 +106,7 @@ void TextDocument::addTextToPos(sf::String text, int line, int charN) {
 
     for (int i = 0; i < (int)text.getSize(); i++) {
         if (text[i] == '\n' || text[i] == 13) {          // text[i] == \n
-            int newLineStart = bufferInsertPos + i + 1;  // Nueva linea comienza despues del nuevo \n
-
-            // Inserto O(#lineas) y uso busqueda binaria pues los inicios de lineas son crecientes
+            int newLineStart = bufferInsertPos + i + 1; 
             this->lineBuffer.insert(
                 std::lower_bound(this->lineBuffer.begin(), this->lineBuffer.end(), newLineStart),
                 newLineStart);
@@ -122,15 +114,12 @@ void TextDocument::addTextToPos(sf::String text, int line, int charN) {
     }
 }
 
-// TODO: Optimizar
 void TextDocument::removeTextFromPos(int amount, int lineN, int charN) {
     this->documentHasChanged = true;
 
     int bufferStartPos = this->getBufferPos(lineN, charN);
     this->buffer.erase(bufferStartPos, amount);
 
-    // TODO: SUPER OVERKILL. Esto es O(#buffer) y podria ser O(#lineas)
-    // Revisitar idea de correr los lineBuffers en amount, teniendo en cuenta la cantidad de newlines borradas
     this->initLinebuffer();
 }
 
@@ -203,9 +192,7 @@ int TextDocument::getBufferPos(int line, int charN) {
 }
 
 int TextDocument::charsInLine(int line) const {
-    // Si es ultima linea, no puedo compararla con inicio de siguiente pues no hay siguiente
     int bufferSize = this->lineBuffer.size();
-
     if (line == bufferSize - 1) {
         return this->buffer.getSize() - this->lineBuffer[this->lineBuffer.size() - 1];
     }
