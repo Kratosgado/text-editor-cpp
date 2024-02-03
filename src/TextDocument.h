@@ -1,4 +1,4 @@
-#if !defined(TextDocument_H)
+#ifndef TextDocument_H
 #define TextDocument_H
 
 #include <SFML/Graphics.hpp>
@@ -9,39 +9,42 @@
 #include <vector>
 
 #include <algorithm>
+#include <string>
+
 #include "SpecialChars.h"
 
 using std::string;
 using std::vector;
 
 class TextDocument {
-private:
-   sf::String buffer;
-   int length;
-   vector<int> lineBuffer;
-   bool documentHasChanged;
+   public:
+    bool init(string &filename);
+    bool saveFile(string &filename);
+    bool hasChanged();
 
-   // private member functions
-   bool initLineBuffer();
-   int getBufferPos(int line, int charN);
-   void swapWithNextLine(int line);
-   sf::String toUtf32(const string& inString);
+    sf::String getLine(int lineNumber);
+    int charsInLine(int line) const;
+    int getLineCount() const;
 
-public:
-   bool init(string&);
-   bool saveFile(string& filename);
-   bool hasChanged() const;
-   sf::String getLine(int lineNumber);
-   int charsInLine(int line) const;
-   int getLineCount() const;
+    void addTextToPos(sf::String text, int line, int charN);
+    void removeTextFromPos(int amount, int line, int charN);
+    sf::String getTextFromPos(int amount, int line, int charN);
 
-   void addTextToPos(sf::String text, int line, int charN);
-   void removeTextFromPos(int amount, int line, int charN);
-   sf::String getTextFromPos(int amount, int line, int charN);
+    void swapLines(int lineA, int lineB);
 
-   void swapLines(int lineA, int lineB);
-   int charAmountContained(int startLineN, int startCharN, int endLineN, int endCharN);
+    int charAmountContained(int startLineN, int startCharN, int endLineN, int endCharN);
+   private:
+    bool initLinebuffer();
+    sf::String buffer;
+    int length;
+    vector<int> lineBuffer;
+    bool documentHasChanged;
 
+    int getBufferPos(int line, int charN);
+
+    void swapWithNextLine(int line);
+
+    sf::String toUtf32(const std::string &inString);
 };
 
-#endif // TextDocument_H
+#endif
